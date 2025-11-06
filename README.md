@@ -39,3 +39,4 @@ Community feedback loop for continuous improvement.
    uv run main.py
 
 ![AgriAssist logo](dev/Designer-3.png)
+![AgriAssist AI RAG and Reflection Agentic WorkFlow](dev/output.png)
