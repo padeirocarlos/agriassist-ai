@@ -157,9 +157,10 @@ def prescrition_evaluation(state: State) -> Literal["prescrition", "market"]:
 
 async def graph_builder():
     
-    db_path = "graph_memory/graph_memory.db"
+    # db_path = "graph_memory/graph_memory.db"
     # stack = AsyncExitStack()
     # sql_memory = await stack.enter_async_context(AsyncSqliteSaver.from_conn_string(db_path))
+    
     sql_memory = InMemorySaver()
     
     # Set up Graph Builder with State
@@ -185,3 +186,26 @@ async def graph_builder():
     app = graph.compile(checkpointer=sql_memory)
     
     return app
+
+def thread_id_genrater() -> str:
+    return str(uuid.uuid4())
+
+async def message(query, history, thread):
+
+    config = {"configurable": {"thread_id": thread}}
+    user = {"role": "user", "content": query, "query": query}
+    
+    graph = await graph_builder()
+    
+    result = await graph.ainvoke(user, config=config)
+    
+    content_ =list(result["result"][-1].additional_kwargs.values())
+    
+    content = " \n ----- \n ".join(content_)
+    
+    reply = {"role": "assistant", "content": content}
+    
+    return history + [user, reply]
+
+async def reset():
+    return "", "", None, thread_id_genrater()
