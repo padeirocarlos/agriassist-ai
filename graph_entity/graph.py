@@ -158,7 +158,7 @@ def prescrition_evaluation(state: State) -> Literal["prescrition", "market"]:
 async def graph_builder():
     
     db_path = "graph_memory/graph_memory.db"
-    stack = AsyncExitStack()
+    # stack = AsyncExitStack()
     # sql_memory = await stack.enter_async_context(AsyncSqliteSaver.from_conn_string(db_path))
     sql_memory = InMemorySaver()
     
@@ -176,16 +176,12 @@ async def graph_builder():
     graph.add_edge(START, "retrieval")
     graph.add_conditional_edges("retrieval", prescrition_evaluation)
     graph.add_conditional_edges("prescrition", prescrition_evaluation)
-    # graph.add_edge("retrieval", "prescrition")
-    # graph.add_edge("prescrition", "market")
     
     graph.add_edge("market", "stock")
     graph.add_edge("stock", "princing")
     graph.add_conditional_edges("princing", princing_evaluation)
-    # graph.add_edge("princing", END)
 
     # Adding sql_memory
     app = graph.compile(checkpointer=sql_memory)
-    # app = graph.compile()
     
     return app

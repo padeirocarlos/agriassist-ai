@@ -33,9 +33,9 @@ Community feedback loop for continuous improvement.
    curl -fsSL https://ollama.com/install.sh | sh
    ollama server
    ollama pull ollama3  # pull one of this model:  gemma4B_v gemma12B_v qwen3 gemini ollama3.2 deepseek
-   cd agriassist-response-ai
+   cd agriassist-ai
    uv sync
    uv add -r requirements.txt
    uv run main.py
 
-                    ![AgriAssist logo](dev/Designer-3.png)
+![AgriAssist logo](dev/Designer-3.png)
