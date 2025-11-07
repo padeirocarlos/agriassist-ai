@@ -102,6 +102,41 @@ def market_analysis(crop_product:str) -> str:
         """
     return instruction
 
+def retrievel_prescrition_analysis(crop_product:str) -> str:
+    
+    instruction = f"""
+        
+        CONTEXT:
+        Use this tool 'retrieve_context' to retrieve crop disease information to perform an educational 
+        analysis of disease management practices for {crop_product} 
+        crop based on agricultural research and established farming guidelines.
+        Provide informational overview of disease identification, contributing factors, 
+        and standard agricultural practices used by farmers and agronomists.
+        Focus on general agricultural knowledge applicable to growing conditions located
+        in {location} during {current_season}/{current_year}.
+
+        TASK:
+        - Use this tool only 'retrieve_context' to retrieve crop disease information to perform an educational 
+        analysis of disease management practices for {crop_product}
+        
+        EQUIREMENTS:
+            An informational summary with 4 key components covering:
+            - Disease identification characteristics and symptom patterns.
+            - Environmental and biological factors associated with the condition.
+            - Common management approaches used in modern agriculture.
+            - Standard preventive practices recommended by agricultural extension services.
+        
+        Respond in this format:
+            {{"disease_identification": "here precise description of disease characteristics, common and scientific names, typical symptom patterns observed in affected crops",
+            "contributing_factors": "here detailed explanation of pathogen/pest characteristics, environmental conditions commonly associated with disease development, and typical spread patterns",
+            "management_approaches": "here comprehensive overview of standard agricultural practices including: commonly used treatments (active ingredients and typical application rates), timing considerations, integrated pest management options, and conventional corrective measures",
+            "preventive_practices": "here detailed description of standard prevention strategies including: rotation patterns, variety selection considerations, cultural management practices, sanitation protocols, monitoring guidelines, and early detection indicators",
+            "confidence": "here detailed classification of the confidence level of response: High, Medium, or Low",
+            }}
+        """
+    return instruction
+
+# retrieve_context
 def prescrition_analysis(crop_product:str) -> str:
     
     instruction = f"""

@@ -11,12 +11,11 @@ from langchain.tools import tool
 from agents import Agent, Runner
 from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
-from retriever.retrieve import vector_store
 from .agents_client import model_client_name_dict
 from mcp_server.mcp_server import Agentic_MCP_Server
 from langchain.agents.structured_output import ToolStrategy, ProviderStrategy
 from .out_puts import StockAnalysisResult, PriceAnalysisResult, PrescritionAnalysisResult, MarketAnalysisResult
-from .instructions import stock_analysis, email_instructions, pricing_analysis, market_analysis, prescrition_analysis
+from .instructions import stock_analysis, email_instructions, pricing_analysis, market_analysis, prescrition_analysis, retrievel_prescrition_analysis
 
 load_dotenv(override=True)
 
@@ -146,12 +145,18 @@ class AgriAssistAgentic:
     
     async def retrieval_agent(self, crop_product, model_name:str, num_chunks:int=90):
         messages = [{"role": "user", "content": " You are a educational analysis of disease management practices expert."}]
-        retrieval_prompt = prescrition_analysis(crop_product = crop_product)
+        retrieval_prompt = retrievel_prescrition_analysis(crop_product = crop_product)
         
+        if self.agentic_mcp_server == None:
+            await self.connect_to_servers()
+        
+        mcp_servers = self.agentic_mcp_server.mcp_servers["retrievel_server"]
+            
         agent =  Agent(
             name = "Retrieval Agent",
             instructions = retrieval_prompt,
             model = self.get_model(self.model_name) if model_name is None else self.get_model(model_name),
+            mcp_servers = mcp_servers,
             output_type=PrescritionAnalysisResult,)
         
         result = await Runner.run(agent, messages)
@@ -274,18 +279,3 @@ class AgriAssistAgentic:
     
     def _config(self, thread:str = 1) -> dict:
         return {"configurable": {"thread_id": thread}}
-
-@tool("retrieve_context", description="Retrieve information to help answer a query")
-def retrieve_context(query: str, num_chunks:int=90) -> str:
-    """Retrieve information to help answer a query.
-        Args:
-            query: The query.
-            num_chunks: number of chunks.
-    """
-    vectorstore = vector_store(num_chunks=num_chunks)
-    retrieved_docs = vectorstore.similarity_search(query, k=2)
-    serialized = "\n\n".join(
-        (f"Source: {doc.metadata}\nContent: {doc.page_content}")
-        for doc in retrieved_docs
-    )
-    return serialized, retrieved_docs

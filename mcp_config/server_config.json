@@ -6,9 +6,15 @@
             "args": [
                 "-y",
                 "@modelcontextprotocol/server-filesystem",
-                "." ]
+                "."
+            ]
         },
         
+        "retrievel_server": {
+            "command": "uv",
+            "args": ["run", "mcp_server/retrievel_server.py"]
+        },
+
         "email_server": {
             "command": "uv",
             "args": ["run", "mcp_server/email_server.py"]

@@ -1,6 +1,9 @@
+import os
 import uuid
+import warnings
 import gradio as gr
-from graph_entity.graph import graph_builder, thread_id_genrater, message, reset
+warnings.filterwarnings('ignore', message='Can not control echo on the terminal')
+from graph_entity.graph import thread_id_genrater, message, reset
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="emerald")) as demo:
     gr.Markdown("## Personal Agro Assistant AI Supporter ")
@@ -21,8 +24,5 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="emerald")) as demo:
     go_button.click(message, [chat_query, chatbot, thread], [chatbot])
     reset_button.click(reset, [], [chat_query, chatbot, thread])
     
-demo.launch(share=True)
-
-# How to address  Fall Army Worm disease in Maize?
-# if __name__ == "__main__":
-#     main()
+# demo.launch(share=True, auth=os.getenv("HUGGING_FACE_API_TOKEN"))
+demo.launch(share=True, auth=None)
